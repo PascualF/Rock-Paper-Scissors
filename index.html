@@ -4,60 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rock Paper Scissors</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     
+    
+    <div class="container">
+        <div class="show-score">
+            <span class="human-score-span"></span>
+            <span class="computer-score-span"></span>
+        </div>
+        <button class="btn" id="rock">Rock</button>
+        <button class="btn" id="paper">Paper</button>
+        <button class="btn" id="scissors">Scissors</button>
+        <div class="result-div">
+
+        </div>
+    </div>
+
     <script>
+        // We just create some varaibles from mainly the html code.
+        const buttons = document.querySelectorAll(".btn");
+        const show_result = document.querySelector(".show-score");
+        const result_box = document.querySelector(".result-div")
+        const humanScoreSpan = document.querySelector(".human-score-span")
+        const computerScoreSpan = document.querySelector(".computer-score-span")
+
+        // Those variable ae in let because they will update.
+        let humanScore = 0;
+        let computerScore = 0;
+
+        // Function to get one of the choices from the computer
         function getComputerChoice () {
             const choiceComputer = ['rock', 'paper', 'scissors'];
             return choiceComputer[Math.floor(Math.random() * 3)];
         };
 
-        function getHumanChoice () {
-            const choiceHuman = window.prompt("Choose your play", "");
-            return choiceHuman;
-        }
-
-        let humanScore = 0;
-        let computerScore = 0;
-
+        // Function to play 1 round at the time
         function playRound (humanChoice, computerChoice) {
-            let humanWin = true
-            humanChoice = humanChoice.toLowerCase()
+            let humanWin = false;
+            const resultDiv = document.createElement("div");
+            resultDiv.classList.add("result");
+            result_box.appendChild(resultDiv);
+
             if (humanChoice === computerChoice){
-                return `Draw!`
+                resultDiv.textContent = `Draw!`;
+                return  resultDiv.textContent = `Draw!`;
             } else if (humanChoice === 'rock' && computerChoice === 'paper'){
-                console.log(`You lose! ${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)} beats ${humanChoice}`)
-                humanWin = false
-                return `${humanWin}`
+                resultDiv.textContent = `You lose! ${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)} beats ${humanChoice}`;
+                return humanWin;
             } else if (humanChoice === 'paper' && computerChoice === 'scissors'){
-                console.log(`You lose! ${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)} beats ${humanChoice}`)
-                humanWin = false
-                return `${humanWin}`
+                resultDiv.textContent = `You lose! ${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)} beats ${humanChoice}`;
+                return humanWin;
             } else if (humanChoice === 'scissors' && computerChoice === 'rock'){
-                console.log(`You lose! ${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)} beats ${humanChoice}`)
-                humanWin = false
-                return `${humanWin}`
+                resultDiv.textContent = `You lose! ${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)} beats ${humanChoice}`;
+                return humanWin;
             } else {
-                console.log(`You won! ${humanChoice.charAt(0).toUpperCase() + humanChoice.slice(1)} beats ${computerChoice}`)
-                return `${humanWin}`
+                resultDiv.textContent = `You won! ${humanChoice.charAt(0).toUpperCase() + humanChoice.slice(1)} beats ${computerChoice}`;
+                humanWin = true;
+                return humanWin;
             };
         };
 
-        function playGame(){
-            for(let i = 0; i < 5; i++){
-                humanWinning = playRound(getHumanChoice(), getComputerChoice());
-                if(humanWinning === 'true'){
-                    humanScore += 1;
-                } else if (humanWinning === 'false'){
-                    computerScore += 1;
-                };
-                console.log(humanScore, computerScore)
+        // Function to check if human or computer got to 5: winning points
+        function checkScore(humanScore, computerScore){
+            if(humanScore === 5){
+                const h2 = document.createElement("h2");
+                h2.classList.add("score-check");
+                h2.innerText = `Congratulation human, you got ${humanScore}`;
+                result_box.appendChild(h2);
             }
-            return console.log(humanScore)  
+            if(computerScore === 5){
+                const h2 = document.createElement("h2");
+                h2.classList.add("score-check");
+                h2.innerText = `You lost to the compter, it got ${computerScore} and you ${humanScore}`;
+                result_box.appendChild(h2);
+            }
+        }
+
+        // function to update the score
+        function updateScore(humanScore, computerScore){
+            humanScoreSpan.innerText = `Human Score: ${humanScore}`
+            computerScoreSpan.innerText = `Computer Score: ${computerScore}`
+        }
+
+        //fucntin to display the score above the buttons
+        function displayScore(humanChoice, computerChoice){
+            humanWin = playRound(humanChoice, computerChoice);
+            if (humanWin === false){
+                computerScore++;
+            } else if (humanWin === true){
+                humanScore++;
+            };
+            updateScore(humanScore, computerScore);
+            checkScore(humanScore, computerScore);
         };
 
-        playGame();
+        // forEach to acces each id (being the choice of the player) of each button
+        buttons.forEach(button => {
+            button.addEventListener('click', () =>{
+                displayScore(button.id, getComputerChoice())
+            })
+        })
 
     </script>
 </body>
